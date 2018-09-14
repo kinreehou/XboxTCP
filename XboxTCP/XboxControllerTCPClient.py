@@ -3,6 +3,8 @@
 Created on Mon Aug 20 13:49:54 2018
 
 @author: natsn
+
+modified by Kinree Aug 27
 """
 
 import time
@@ -12,26 +14,30 @@ import os
 import KeyboardListener
 
 client_count = 0
-mode = 'linux'
 
 # listens to movements on the xbox controller through connecting to a TCP port
 class XboxControllerTCPClient(TCPClient.TCPClient):
     
     def __init__(self, host = "127.0.0.1", port = 5000, buff_size = 1024, 
                  isLeader = False, write_to_path = None,
-                 write_after = 500):
+                 write_after = 500, mode = 'linux'):
         TCPClient.TCPClient.__init__(self)
         
+        self.mode = mode
         self.write_after = write_after
         global client_count
         client_count += 1
+
         if write_to_path is None:
             self.fWriter = FileWriter(os.getcwd() + "XboxTCPClient" + str(client_count) + ".csv")
         else:
             self.fWriter = FileWriter(write_to_path)
         
-        if mode == 'linux':
-            self.control_labels = ["leftX","leftY","rightX","rightY","A","B","X","Y","dpadUp","dpadDown","dpadLeft","dpadRight","Time"]
+        if self.mode == 'linux':
+            self.control_labels = ["leftX","leftY","rightX", "rightY", "A", "B", "X", "Y", 
+                    "dpadUp", "dpadDown", "dpadLeft", "dpadRight",
+                    "leftBumper","rightBumper","leftTrig","rightTrig",
+                    "Back","Guide","Start","Time"]
         else:
             self.control_labels = ["LA","LAV","LB","LBP","Time"]
 
@@ -53,6 +59,13 @@ class XboxControllerTCPClient(TCPClient.TCPClient):
         self.control_dic[self.control_labels[10]].append(data[self.control_labels[10]])
         self.control_dic[self.control_labels[11]].append(data[self.control_labels[11]])
         self.control_dic[self.control_labels[12]].append(data[self.control_labels[12]])
+        self.control_dic[self.control_labels[13]].append(data[self.control_labels[13]])
+        self.control_dic[self.control_labels[14]].append(data[self.control_labels[14]])
+        self.control_dic[self.control_labels[15]].append(data[self.control_labels[15]])
+        self.control_dic[self.control_labels[16]].append(data[self.control_labels[16]])
+        self.control_dic[self.control_labels[17]].append(data[self.control_labels[17]])
+        self.control_dic[self.control_labels[18]].append(data[self.control_labels[18]])
+        self.control_dic[self.control_labels[19]].append(data[self.control_labels[19]])
 
     def format_controls_windows(self, data):
         self.control_dic[self.control_labels[0]].append(data[self.control_labels[0]])
@@ -65,7 +78,7 @@ class XboxControllerTCPClient(TCPClient.TCPClient):
         if self.isConnected:
             controls = self.recv_ack()
             if controls is not None:
-                if mode == 'linux':
+                if self.mode == 'linux':
                     self.format_controls_linux(controls)
                 else:
                     self.format_controls_windows(controls)

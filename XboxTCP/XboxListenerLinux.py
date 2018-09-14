@@ -49,7 +49,10 @@ def fmtFloat(n):
     return '{:6.3f}'.format(n)
 
 # Globals
-keys = ["leftX","leftY","rightX", "rightY", "A", "B", "X", "Y", "dpadUp", "dpadDown", "dpadLeft", "dpadRight", "Time"]
+keys = ["leftX","leftY","rightX", "rightY", "A", "B", "X", "Y", 
+        "dpadUp", "dpadDown", "dpadLeft", "dpadRight",
+        "leftBumper","rightBumper","leftTrig","rightTrig",
+        "Back","Guide","Start","Time"]
 
 lock = threading.Lock()
 xboxq = XboxQ()
@@ -67,7 +70,9 @@ def sample_first_joystick(dt):
                      keys[2]:fmtFloat(xbl.rightX()), keys[3]:fmtFloat(xbl.rightY()),
                      keys[4]:xbl.A(), keys[5]:xbl.B(), keys[6]:xbl.X(), keys[7]:xbl.Y(),
                      keys[8]:xbl.dpadUp(), keys[9]:xbl.dpadDown(), keys[10]:xbl.dpadLeft(), keys[11]:xbl.dpadRight(),
-                     keys[12]:now}
+                     keys[12]:xbl.leftBumper(), keys[13]:xbl.rightBumper(), 
+                     keys[14]:fmtFloat(xbl.leftTrigger()), keys[15]:fmtFloat(xbl.rightTrigger()),
+                     keys[16]:xbl.Back(), keys[17]:xbl.Guide(), keys[18]:xbl.Start(), keys[19]:fmtFloat(now)}
         xboxq.put(xboxInput)
         time.sleep(dt)
 
